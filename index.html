@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+    <!-- استایل های CSS -->
+    <style>
+        /* کل صفحه را مشکی میکنیم و محتوا را وسط قرار میدهیم */
+        body {
+            background: #000;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial;
+        }
+
+        /* جعبه فرم */
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 30px orange; /* سایه نارنجی */
+            width: 300px;
+        }
+
+        /* عنوان فرم */
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 25px;
+        }
+
+        /* هر گروه از ورودی ها */
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        /* برچسب های بالای ورودی */
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        /* خود ورودی ها */
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+
+        /* دکمه ثبت نام */
+        button {
+            width: 100%;
+            padding: 12px;
+            background: orange;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        /* وقتی موس روی دکمه است */
+        button:hover {
+            background: #ff8c00;
+        }
+
+        /* پیام های خطا/موفقیت */
+        .message {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            font-size: 100px;
+        }
+
+        /* پیام های خطا زیر هر فیلد */
+        .error-message {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>creat new account</h1>
+        <form id="myForm" action="process.php" method="post" onsubmit="return validateForm()">
+            <!-- فیلد نام کامل -->
+            <div class="input-group">
+                <label for="fullname">username:</label>
+                <input type="text" id="fullname" name="fullname" onchange="validateFullname()">
+                <div id="fullname-error" class="error-message"></div>
+            </div>
+
+            <!-- فیلد ایمیل -->
+            <div class="input-group">
+                <label for="email">email:</label>
+                <input type="email" id="email" name="email" onchange="validateEmail()">
+                <div id="email-error" class="error-message"></div>
+            </div>
+
+            <!-- فیلد رمز عبور -->
+            <div class="input-group">
+                <label for="password">password:</label>
+                <input type="password" id="password" name="password" onchange="validatePassword()">
+                <div id="password-error" class="error-message"></div>
+            </div>
+
+            <!-- تکرار رمز عبور -->
+            <div class="input-group">
+                <label for="repassword">repassword:</label>
+                <input type="password" id="repassword" name="repassword" onchange="validateRepassword()">
+                <div id="repassword-error" class="error-message"></div>
+            </div>
+
+            <!-- دکمه ارسال -->
+            <button type="submit">login</button>
+        </form>
+    </div>
+
+    <!-- پیام ها (ابتدا پنهان است) -->
+    <div id="message" class="message"></div>
+
+    <!-- جاوااسکریپت -->
+    <script>
+        // اعتبارسنجی نام کامل
+        function validateFullname() {
+            let fullname = document.getElementById('fullname').value;
+            let errorDiv = document.getElementById('fullname-error');
+
+            if (fullname === "") {
+                errorDiv.innerHTML = "enter the full name";
+                return;
+            } else {
+                errorDiv.innerHTML = "";
+                return;
+            }
+        }
+
+        // اعتبارسنجی ایمیل
+        function validateEmail() {
+            let email = document.getElementById('email').value;
+            let errorDiv = document.getElementById('email-error');
+
+            if (email === "") {
+                errorDiv.innerHTML = "enter the email";
+                return;
+            } else if (!emailPattern.test(email)) {
+                errorDiv.innerHTML = "its not valid";
+                return;
+            } else {
+                errorDiv.innerHTML = "";
+                return true;
+            }
+        }
+
+        // اعتبارسنجی رمز عبور
+        function validatePassword() {
+            let password = document.getElementById('password').value;
+            let errorDiv = document.getElementById('password-error');
+
+            if (password === "") {
+                errorDiv.innerHTML = "enter the password";
+                return;
+            } else if (password.length < 8) {
+                errorDiv.innerHTML = "password have to be 8 character or more";
+                return;
+            } else {
+                errorDiv.innerHTML = "";
+                return;
+            }
+        }
+
+        // اعتبارسنجی تکرار رمز عبور
+        function validateRepassword() {
+            let password = document.getElementById('password').value;
+            let repassword = document.getElementById('repassword').value;
+            let errorDiv = document.getElementById('repassword-error');
+
+            if (repassword === "") {
+                errorDiv.innerHTML = "enter the password again";
+                return;
+            } else if (password !== repassword) {
+                errorDiv.innerHTML = "its not the same password";
+                return;
+            } else {
+                errorDiv.innerHTML = "";
+                return;
+            }
+        }
+
+        // اعتبارسنجی کلی فرم
+        function validateForm() {
+            let isFullnameValid = validateFullname();
+            let isEmailValid = validateEmail();
+            let isPasswordValid = validatePassword();
+            let isRepasswordValid = validateRepassword();
+
+            if (isFullnameValid && isEmailValid && isPasswordValid && isRepasswordValid) {
+                document.getElementById('message').innerHTML = "✅";
+                document.getElementById('message').style.display = 'flex';
+                return;
+            } else {
+                document.getElementById('message').innerHTML = "❌";
+                document.getElementById('message').style.display = 'flex';
+                return;
+            }
+        }
+    </script>
+</body>
+</html>
